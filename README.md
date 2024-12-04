@@ -2,19 +2,15 @@
 
 ## Overview
 
-This project aims to analyze a dataset of used cars to identify the key factors that influence their prices. The original dataset contained 3M vehicles, how we are provided with information on 426K cars, including various attributes such as condition, odometer reading, year, and more. The goal is to develop a predictive model to help a used car dealership understand what consumers value in a used car.
-
-### Data Analysis jupyter notebook
-The data analysis notebook can be found at this public github repository:
-https://github.com/mgk2014/PCMLAI-cars
+This project aims to analyze a dataset of used cars to identify the key factors that influence their prices. The original dataset contained 3M vehicles, however we are provided with information on 426K cars, including various attributes such as condition, odometer reading, year, and more. The goal is to develop a predictive model to help a used car dealership understand what consumers value in a used car.
 
 ## Business Understanding
 
-From a business perspective, the task is to identify key attributes that drive the price of used car prices. This involves leveraging the provided vehicles data set, conducting exploratory data analysis, preparing data, employing machine learning for linear, ridge and lasso regression, selecting appropriate hyper parameters and evaluating the models, and providing a recommendation on which model to go with
+From a business perspective, the task is to identify key attributes that drive the price of used car prices. This involves leveraging the provided vehicles data set, conducting exploratory data analysis, preparing data, employing machine learning to predict features that the customers would value in used cars
 
 ## Data Preparation Tasks
 
-Data quality and cleanup steps included:
+The following steps were taken to treat missing and duplicate data, and data that were not included in the model due to the limitatations of the compute system.
 
 1. Removing IDs, VINs - since these are text columns and would not have an impact on the price
 2. Removing categorical columns with a large number of unique values such as state(51), region (404), model(29549). While some models of vehicles in some states may drive price, including all these values, will make the models evaluated below too complicated to run on laptops.
@@ -23,7 +19,7 @@ Data quality and cleanup steps included:
 5. Converting data types (cylinder from string to numeric)
 6. Addressed outliers with price and odometer. For the purposes of this analysis all vehicles price < 100K and odometer <500k are included
 
-## Findings
+## Summary of Findings
 
 Initial data analysis provided the following assessment:
 1. Vehicles with `lower odometer` readings, and `newer year models` command higher values. As the odometer readings increase the condition of the vehicles determine the value of the vehicle. Vehicles in `new, like new conditions` command higher prices
@@ -32,18 +28,18 @@ Initial data analysis provided the following assessment:
 3. Vehicles in `new and like new conditions sell on average for ~27k and 19k` respectively. Salvaged vehicles on the other hand sell on average for 3.7k
 4. Vehicles with `parts only titles sell for 3.2k` on average
 
-### Machine Learning models
+### Predicting used car price
 
-We evaluated  3 different machine learning models (LinearRegression, Lasso, Ridge on both numerical and categorical variables). With LinearRegression, degree 3 model with both numerical and categorical data we achieved a score of 61%. This model may be used to make predictions on the price of a car given the following features: 
+The chosen machine learning model makes predictions on the price of a car given on the following features: 
 1. odometer reading, year, number of cylinders
 2. title status, manufacturer, condition, fuel type, vehicle type
 
-As an example, our chosen model predicts the price of 3 vehicles (2005 yr, 6 cyl, clean title, 100k miles, manual, sedan, gas)  as follows:
+As an example, our chosen model predicts the price of 3 vehicles (all 2005 yr, 6 cyl, clean title, 100k miles, manual, sedan, gas) as follows:
 1. Toyota: 6,389.37
 2. Audi: 7,869.89
 3. Ford: 5,453.41
 
-We find that the features that have the biggest `positive` impact on the price of the car as follows (from most to least important):
+We find that the top features that have the biggest `positive` impact on the price of the car as follows:
 
 1. Manufacturer: `Ferrari, Tesla, Ashton Martin, Porsche`
 2. Fuel Type: `Diesel`
@@ -51,69 +47,75 @@ We find that the features that have the biggest `positive` impact on the price o
 4. Type: `Pickup`
 5. Condition: `like new`
 
-The features that have the biggest `negative` impact on the price of the car as follows (from most to least important):
+Similarity the top features that have the most `negative` impact on the price of the car as follows:
 
 1. Manufacturer: `Fiat, Harley, Mitsubishi, Kia, Nissan, Chrysler`
 2. Fuel Type: `Electric`
 3. Type: `Bus, hatchback`
 4. Title: `parts only`
 
-# Next steps recommendation
+There are many other features that have an impact on the price between these two extremes. These are detailed in the notebook.
 
-1. The original data set had a lot of `missing data, ranging from 20 to 40%` for these columns
-* condition       40.79
-* cylinders       41.62
-* drive           30.59
+This model scored at 61% and require further improvement before it may be used by dealership to determine features of most importance.
 
-These features were inferred using most frequently occuring method. Perhaps KNeighborsClassifier may be used to find values for these categorical variables
+## Next steps recommendation
 
-2. Instead of computing missing values, when all missing values are dropped, the data shrinks to 15% of it's original size. This translates to 60K records. Running the above models in this data data set may provide a better model, assuming the significanly reduced data set can provide a good representation of the overall data. This requires further analysis
+A good model should have a score of 80% or more. Ways in which the model may be improved are to revisit the strategy for missing data such as condition, cylinders, drive, size and other columns. These features were inferred using most frequently occuring (mode) method. Perhaps a classifier such KNeighborsClassifier may be used to impute these values
 
-3. Additional model optimization may be accomplished by reviewing the outlier conditions, scaling methods and further adjusting the hyper parameters of the model
+Instead of computing missing values, another strategy may be to drop all rows with missing values. This would shrink the data to 15% of it's original size i.e. about 60k used vehicle records. Building a model with such a data data set may provide a better model, assuming the significanly reduced data set can provide a good representation of the overall data. This requires further analysis.
 
-## Detailed findings and visual explanations
+Data such as region, state, and model were not included in the evaluation due to the limitation of the compute system. These features can be explored further with a more powerful compute system.
 
+Additional model optimization may be accomplished by reviewing the outlier conditions, scaling methods and further adjusting the hyper parameters of the model.
 
-### Exploratory data analysis
+## Details of model evaluation
 
-This analysis includes exploration of overall data set, bar coupons and cheap restaurant coupons.
+We observed the following with these models
 
-1. Univariate analysis
-2. Bi-variate analysis (e.g., how cylinders and prices move together)
-3. Correlation analysis
-4. Visualizations (e.g., scatter plots, histograms, bar plots)
+* LinearRegression model, degree 1 for numerical features scored the lowest at 34%. A degree 2 model helped improve the score to 46% 
+* Ridge, Lasso models for numerical features with degree 3 scored at 49%. GridSearchCV was used to find the best alpha values, indicated in the table
+* LinearRegression model was further improved with additional of categorical variables. This helped improved the score to 61% (model index 2.1 above)
+* Ridge, Lasso for numerical and categorical with OHE returned the same score as LinearRegression at 61%
+* Finally a LinearRegression model with Numercial, Categorical (both OHE and ordinal) was created. The score did not improve with this model and remained at 61%
 
-### Modeling Evaluation
+`Note`: on Lasso for numerical and categorical columns (model index 2.3). The model fit was taking a long time and providing convergence warnings, so I changed the default parameters for GridSearchCV: change cross validation to 2, # and n_jobs to -1 (to use all processors)
 
-Different regression models are built to predict used car prices. The models include:
+`Model Recommendation`: Considering there is no improvement using Lasso or Ridge regression and time cost of these regularization models are high, the recommendation is to use the `LinearRegression model with both numerical and categorical variables`. This is model index 2.1 in the above evaluation table
 
-1. Linear Regression
-2. Ridge Regression
-3. Lasso Regression
+ ![Model evaluations](plots/models.png)
 
-Each model is evaluated using metrics such as RMSE and R-squared. The models are built using both numerical and categorical features.
+## Exploratory data analysis
 
+1. Most cars that were evaluated had odomoter readings between of less than 100k miles 
 
+    ![Odometer](plots/2-Distribution-by-odometer-readings.png)
 
-The models are evaluated based on their performance metrics. The findings are reviewed to determine whether the earlier phases need revisitation and adjustment or if the information is valuable to the client.
+2. Correlation of price with numerical features such as odometer, year and cylinders
 
-## Deployment
+- **Price and Odometer**: There is a moderate negative correlation (-0.41) between price and odometer reading. This indicates that as the odometer reading increases, the price of the vehicle tends to decrease. This is expected as cars with higher mileage are generally less expensive.
 
-The final step is to deliver the findings to the client. The work is organized as a basic report that details the primary findings and provides recommendations to the used car dealership.
+- **Price and Years**: There is a positive correlation between price and the number of cylinders (0.29). This suggests that more recent vehicles tend to be priced higher. This 
 
+    ![correlation](plots/1-numerical_corr.png)
 
+3. Comparing prices with year, odometer and cylinders. We can see that are odometer values increase, prices fall and newer cars command higher prices
 
+    ![pricewithnumerical](plots/4-Scatterplot-odometer-cylinders-year-vs-prices.png)
 
+4. The condition of the vehicle helps improve the price, given a higher odometer reading
 
-## Conclusion
+    ![odometercondition](plots/4-Odometer_vs_prices.png)
 
-The project provides insights into the key factors that influence used car prices. The models developed can help the dealership fine-tune their inventory and pricing strategies based on consumer preferences.
+5. Comparing average vehicle price by title, transmission and type, we can observe that vehicles with lien title & pick ups have higher prices on avg
+
+    ![avgpricebytitle](plots/8-Average_prices_by_title_status_transmission_type.png)
 
 ## Files
 
-- `notebook.ipynb`: The Jupyter Notebook containing the analysis and modeling
+- `prompt_A.ipynb`: The Jupyter Notebook containing the analysis and modeling
 - `data/vehicles.csv`: The dataset used for the analysis
 - `images/`: Directory containing images used in the notebook
+- `plots/`: Directory containing plots generated by the Jupyter notebook and referred in the readme file
 - `readme.md`: This readme file
 
 ## Requirements
