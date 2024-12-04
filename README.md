@@ -70,7 +70,11 @@ Additional model optimization may be accomplished by reviewing the outlier condi
 
 ## Details of model evaluation
 
-We observed the following with these models
+The table below summarizes the evaluation metrics of different models that were run on the vehicles dataset
+
+ ![Model evaluations](plots/models.png)
+
+ We observed the following with these models
 
 * LinearRegression model, degree 1 for numerical features scored the lowest at 34%. A degree 2 model helped improve the score to 46% 
 * Ridge, Lasso models for numerical features with degree 3 scored at 49%. GridSearchCV was used to find the best alpha values, indicated in the table
@@ -82,9 +86,10 @@ We observed the following with these models
 
 `Model Recommendation`: Considering there is no improvement using Lasso or Ridge regression and time cost of these regularization models are high, the recommendation is to use the `LinearRegression model with both numerical and categorical variables`. This is model index 2.1 in the above evaluation table
 
- ![Model evaluations](plots/models.png)
+## Exploratory data analysis (EDA)
 
-## Exploratory data analysis
+Some of the EDA done on this data set is presented. Additional charts are available in the plots sub folder and within the notebook
+
 
 1. Most cars that were evaluated had odomoter readings between of less than 100k miles 
 
