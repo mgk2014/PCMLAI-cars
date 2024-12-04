@@ -6,7 +6,7 @@ This project aims to analyze a dataset of used cars to identify the key factors 
 
 ## Business Understanding
 
-From a business perspective, the task is to identify key attributes that drive the price of used car prices. This involves leveraging the provided vehicles data set, conducting exploratory data analysis, preparing data, and using machine learning to predict features that the customers would value in used cars. This informmation may be used by dealerships to make business decisions on their inventory.
+From a business perspective, the task is to identify key attributes that drive the price of used car prices. This involves leveraging the provided vehicles data set, conducting exploratory data analysis, preparing data, and using machine learning to identify features that the customers would value in used cars. This informmation may be used by dealerships to make business decisions on their inventory.
 
 ## Summary of Findings and Recommendations
 
